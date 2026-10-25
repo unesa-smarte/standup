@@ -1,712 +1,484 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stand-Up Comedy TTS & Translation Studio</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            400: '#fb923c',
-                            500: '#f97316',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            900: '#7c2d12',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Telemetri Power Meter</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Corsfix CDN -->
+  <script src="https://unpkg.com/corsfix"></script>
+  <!-- Marked CDN untuk Markdown -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+
+  <style>
+  /* Styling otomatis untuk tabel hasil render Markdown di dalam kotak AI */
+  #aiContent table {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+  #aiContent th, #aiContent td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  #aiContent th {
+    background-color: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+    color: #93c5fd;
+  }
+  #aiContent tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased">
+<body class="bg-gray-100 text-gray-800 font-sans p-4 md:p-8">
 
-    <!-- Top Navigation Header -->
-    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
-                    <i class="fa-solid fa-microphone-lines text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base sm:text-lg text-slate-100 flex items-center gap-2">
-                        Stand-Up TTS Studio
-                        <span class="text-[10px] bg-brand-500/10 text-brand-400 border border-brand-500/20 px-2 py-0.5 rounded-full font-semibold">
-                            Gemini 3.1 & 2.5
-                        </span>
-                    </h1>
-                    <p class="text-xs text-slate-400 hidden sm:block">Ubah Materi Komedi Asing menjadi Bahasa Indonesia & Suara Komika (.WAV)</p>
-                </div>
-            </div>
+  <div class="max-w-7xl mx-auto space-y-6">
 
-            <div class="flex items-center gap-2">
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="hidden sm:flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-medium px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 transition-all">
-                    <i class="fa-solid fa-key"></i> Dapatkan API Key Gratis
-                </a>
-                <span id="keyStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
-                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                    API Key Belum Set
-                </span>
-            </div>
+    <!-- Header Section -->
+    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4 w-full md:w-auto">
+        <!-- Placeholder Logo -->
+        <img id="siteLogo" src="logo.png" alt="Logo" class="h-16 w-16 object-contain rounded-md border p-1">
+        <div class="w-full md:w-auto min-w-[300px]">
+          <!-- Nama Lokasi Statis -->
+          <h1 class="text-2xl font-bold text-gray-800 tracking-wide block">
+            Unesa Depo Sampah Lidah Wetan
+          </h1>
+          <p class="text-sm text-gray-500 mt-1">Monitoring System Power Meter 3-Phase</p>
         </div>
-    </header>
+      </div>
 
-    <!-- PROMINENT GEMINI API KEY INPUT BANNER (SIAP UPLOAD GITHUB) -->
-    <section class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border-b border-amber-500/30 p-4 sm:p-6 shadow-xl relative">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                <div class="flex items-start gap-3.5">
-                    <div class="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 mt-1 sm:mt-0">
-                        <i class="fa-solid fa-shield-halved text-xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
-                            Pengaturan Gemini API Key
-                            <span class="text-[11px] font-normal text-slate-400">(Wajib untuk GitHub Pages)</span>
-                        </h2>
-                        <p class="text-xs text-slate-400 mt-0.5">
-                            Key disimpan aman secara lokal di browser (<code class="text-amber-300">localStorage</code>) dan tidak pernah dikirim ke server pihak ketiga.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                    <div class="relative flex-1 sm:w-80">
-                        <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-                        <input type="password" id="geminiApiKeyInput" placeholder="Masukkan Gemini API Key (AIzaSy...)" 
-                               class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-mono transition-all">
-                        <button onclick="toggleKeyVisibility()" type="button" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs p-1">
-                            <i id="eyeIcon" class="fa-solid fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="saveApiKeyFromInput()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/10">
-                            <i class="fa-solid fa-floppy-disk"></i> Simpan Key
-                        </button>
-                        <button onclick="clearApiKey()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs transition-all border border-slate-700" title="Hapus Key">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content Grid -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-        
-        <!-- STEP 1: INPUT YOUTUBE LINK & TRANSCRIPT -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-12 -top-12 w-40 h-40 bg-brand-500/5 rounded-full blur-2xl pointer-events-none"></div>
-            
-            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-7 h-7 rounded-lg bg-brand-500/20 text-brand-400 font-bold text-xs flex items-center justify-center border border-brand-500/30">1</span>
-                    <h2 class="font-bold text-slate-200 text-sm sm:text-base">Materi Komedi Luar Negeri (Input)</h2>
-                </div>
-                <div class="text-xs text-slate-400">Gunakan sampel atau tempel transkrip</div>
-            </div>
-
-            <!-- YouTube URL & Sample Selector -->
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">
-                        <i class="fa-brands fa-youtube text-red-500 mr-1"></i> Link YouTube Stand-Up Komedi (Opsional)
-                    </label>
-                    <div class="flex gap-2">
-                        <input type="text" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." 
-                               class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition-colors">
-                        <button onclick="extractFromUrl()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5">
-                            <i class="fa-solid fa-link text-brand-400"></i> Muat Info
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Sample Presets Buttons -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Atau pilih contoh materi komika ternama:</label>
-                    <div class="flex flex-wrap gap-2" id="sampleButtonsContainer">
-                        <!-- Loaded dynamically -->
-                    </div>
-                </div>
-
-                <!-- Foreign Script Textarea -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">
-                        Transkrip Materi Bahasa Asing / Inggris
-                    </label>
-                    <textarea id="englishTranscript" rows="4" 
-                              placeholder="Tempelkan teks materi komedi luar negeri di sini..." 
-                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-brand-500 transition-colors leading-relaxed font-sans"></textarea>
-                </div>
-
-                <div class="flex justify-end">
-                    <button onclick="generateComedyScript()" id="btnAdapt" class="bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-brand-600/20 flex items-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Ubah ke Komedi Indonesia (AI)
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- STEP 2: INDONESIAN COMEDY SCRIPT EDITOR -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center border border-emerald-500/30">2</span>
-                    <h2 class="font-bold text-slate-200 text-sm sm:text-base">Adaptasi Materi Bahasa Indonesia & Tone Komika</h2>
-                </div>
-                <button onclick="polishPunchlines()" class="text-xs text-amber-400 hover:underline flex items-center gap-1">
-                    <i class="fa-solid fa-bolt"></i> Pertajam Punchline
-                </button>
-            </div>
-
-            <!-- Quick Action Tags -->
-            <div class="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
-                <span class="text-slate-400 mr-1 text-[11px]">Penyelarasan Vokal:</span>
-                <button onclick="insertTag('[jeda]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [jeda]</button>
-                <button onclick="insertTag('[nada tinggi]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [nada tinggi]</button>
-                <button onclick="insertTag('[bisik-bisik]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [bisik-bisik]</button>
-                <button onclick="insertTag('[tertawa kecil]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [tertawa kecil]</button>
-                <button onclick="insertTag('[tempo cepat]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [tempo cepat]</button>
-            </div>
-
-            <!-- Indonesian Script Input -->
-            <div class="space-y-4">
-                <textarea id="indonesianScript" rows="6" 
-                          placeholder="Materi hasil adaptasi ke bahasa Indonesia akan muncul di sini. Anda juga dapat mengeditnya secara manual..." 
-                          class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-emerald-500 transition-colors leading-relaxed font-sans"></textarea>
-            </div>
-        </section>
-
-        <!-- STEP 3: VOICE CONFIGURATION & AUDIO GENERATION (TTS) -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 font-bold text-xs flex items-center justify-center border border-sky-500/30">3</span>
-                    <h2 class="font-bold text-slate-200 text-sm sm:text-base">Pengaturan Suara Komika & Ekspor Audio (.WAV)</h2>
-                </div>
-                <div class="text-xs text-sky-400 font-semibold">Gemini 2.5 Flash TTS</div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <!-- Voice Selection -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Pilih Karakter Suara Komika</label>
-                    <select id="voiceSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
-                        <option value="Zephyr">Zephyr (Energik, Ceria & Nyaring)</option>
-                        <option value="Puck" selected>Puck (Antusias, Cepat & Humoris)</option>
-                        <option value="Fenrir">Fenrir (Ekspresif, Bernada Tinggi & Agresif)</option>
-                        <option value="Kore">Kore (Tegas & Berwibawa)</option>
-                        <option value="Aoede">Aoede (Santai & Kasual)</option>
-                        <option value="Charon">Charon (Berat & Serius)</option>
-                        <option value="Sulafat">Sulafat (Hangat & Ramah)</option>
-                    </select>
-                </div>
-
-                <!-- Speech Style / Tone Instruction -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Gaya Penyampaian (Style Prompt)</label>
-                    <input type="text" id="speechStyle" value="Bicara seperti komika stand-up Indonesia profesional. Berikan nada antusias, intonasi lelucon yang natural, tempo variatif, dan beri penekanan pada kata punchline." 
-                           class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
-                </div>
-            </div>
-
-            <!-- Generate Button -->
-            <div class="flex justify-center mb-6">
-                <button onclick="generateAudioWav()" id="btnGenerateAudio" class="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-sky-600/20 flex items-center gap-2.5">
-                    <i class="fa-solid fa-play"></i> Generate Stand-Up Audio (.WAV)
-                </button>
-            </div>
-
-            <!-- AUDIO PLAYER CONTAINER -->
-            <div id="audioPlayerCard" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col gap-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30">
-                            <i class="fa-solid fa-volume-high text-sm"></i>
-                        </div>
-                        <div>
-                            <div class="text-xs font-bold text-slate-200">Hasil Rekaman Stand-Up Komedi</div>
-                            <div class="text-[11px] text-slate-400" id="audioMetadata">Format: WAV | PCM 16-bit</div>
-                        </div>
-                    </div>
-                    <!-- Download WAV Button -->
-                    <a id="downloadWavBtn" download="standup_comedy_indonesia.wav" href="#" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-md shadow-emerald-600/10">
-                        <i class="fa-solid fa-download"></i> Unduh .WAV
-                    </a>
-                </div>
-
-                <!-- HTML5 Audio Tag -->
-                <audio id="mainAudioPlayer" controls class="w-full h-10 rounded-lg outline-none"></audio>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Toast Notification Container -->
-    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        <div id="toastContent" class="bg-slate-800 border border-slate-700 text-slate-100 px-4 py-3 rounded-xl shadow-2xl text-xs flex items-center gap-2.5">
-            <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400"></i>
-            <span id="toastMessage">Pesan Notifikasi</span>
-        </div>
+      <!-- IMEI Display -->
+      <div class="bg-blue-50 px-4 py-2 rounded-lg border border-blue-200 text-right w-full md:w-auto">
+        <span class="text-xs font-semibold text-blue-600 block uppercase">IMEI Alat</span>
+        <span id="imeiDisplay" class="text-lg font-mono font-bold text-blue-900">-</span>
+      </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4">
-            Stand-Up Comedy TTS & Translation Studio &bull; Powered by Gemini 3.1 & Gemini 2.5 Flash API
+    <!-- Filter & Control Section + Gemini API Key Input -->
+    <div class="bg-white p-6 rounded-xl shadow-md space-y-4">
+      <!-- Input Gemini API Key di Bagian Atas Kontrol -->
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-2">
+        <label class="block text-sm font-semibold text-gray-700">Gemini API Key</label>
+        <div class="flex gap-2">
+          <input type="password" id="geminiApiKeyInput" placeholder="Masukkan Gemini API Key Anda di sini..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono">
+          <button onclick="saveApiKey()" class="bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg transition duration-200 whitespace-nowrap">
+            Simpan Key
+          </button>
         </div>
-    </footer>
+        <p class="text-xs text-gray-500">API Key disimpan secara aman di sesi browser Anda dan tidak disimpan secara permanen di dalam kode.</p>
+      </div>
 
-    <!-- JavaScript Logic -->
-    <script>
-        // Global State & API Key Management
-        let apiKey = localStorage.getItem('GEMINI_API_KEY') || "";
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+          <input type="date" id="startDate" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
+          <input type="date" id="endDate" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <button id="btnFetch" onclick="loadAllData()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+            Tampilkan Data & Analisis AI
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t">
+        <span>* Refresh otomatis diaktifkan tiap 10 menit.</span>
+        <span id="lastUpdated">Belum ada data</span>
+      </div>
+    </div>
 
-        // Sample Stand-Up Comedy Materials
-        const sampleStandups = [
-            {
-                label: "Gabriel Iglesias (Fluffy)",
-                title: "Level Makanan Pedas & Reaksi Tubuh",
-                transcript: "I love Mexican food, but Mexican food doesn't always love me back. There are five levels of fatness, and then there's Fluffy. When you eat hot sauce in Mexico, they don't ask 'Is it hot?' They ask 'Do you have insurance?'"
+    <!-- Charts Container -->
+    <div class="grid grid-cols-1 gap-6">
+      
+      <!-- 1. Tegangan (Phase A, B, C) -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">1. Tegangan Phase A, B, C (V)</h3>
+        <div class="relative h-72"><canvas id="chartVoltage"></canvas></div>
+      </div>
+
+      <!-- 2. Arus (Phase A, B, C) -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">2. Arus Phase A, B, C (A)</h3>
+        <div class="relative h-72"><canvas id="chartCurrent"></canvas></div>
+      </div>
+
+      <!-- 3. Daya Aktif (Phase A, B, C) -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">3. Daya Aktif Phase A, B, C (W)</h3>
+        <div class="relative h-72"><canvas id="chartActivePowerPhase"></canvas></div>
+      </div>
+
+      <!-- 4. Total Daya Aktif -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">4. Total Daya Aktif (W)</h3>
+        <div class="relative h-72"><canvas id="chartActivePowerTotal"></canvas></div>
+      </div>
+
+      <!-- 5. THD Tegangan (Phase A, B, C) -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">5. THD Tegangan Phase A, B, C (%)</h3>
+        <div class="relative h-72"><canvas id="chartThdVoltage"></canvas></div>
+      </div>
+
+      <!-- 6. THD Arus (Phase A, B, C) -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">6. THD Arus Phase A, B, C (%)</h3>
+        <div class="relative h-72"><canvas id="chartThdCurrent"></canvas></div>
+      </div>
+
+      <!-- 7. Power Factor Total -->
+      <div class="bg-white p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">7. Power Factor (Total)</h3>
+        <div class="relative h-72"><canvas id="chartPowerFactor"></canvas></div>
+      </div>
+
+    </div>
+
+    <!-- AI Analysis Section -->
+    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <div class="flex items-center gap-2">
+          <!-- Icon AI Generator -->
+          <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          <h3 class="text-lg font-bold">Analisis Kehandalan Kelistrikan (AI Gemini)</h3>
+        </div>
+        <span id="aiStatus" class="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30">Menunggu data...</span>
+      </div>
+      
+      <div id="aiContent" class="text-slate-300 text-sm leading-relaxed space-y-2 min-h-[100px]">
+        Silakan masukkan Gemini API Key di atas, lalu klik tombol "Tampilkan Data & Analisis AI" untuk memuat grafik dan menghasilkan laporan analisis kelistrikan otomatis berdasarkan standar IEEE 519 dan IEC 61000.
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // --- KONFIGURASI API BACKEND ---
+    const APP_API_KEY = "monacolisa_energy_api_2026"; 
+   
+    // Fungsi untuk menyimpan API Key ke sessionStorage
+    function saveApiKey() {
+      const keyVal = document.getElementById('geminiApiKeyInput').value.trim();
+      if (!keyVal) {
+        alert("API Key tidak boleh kosong!");
+        return;
+      }
+      sessionStorage.setItem('gemini_user_api_key', keyVal);
+      alert("Gemini API Key berhasil disimpan untuk sesi ini.");
+    }
+
+    // Fungsi untuk mengambil API Key dari sessionStorage
+    function getGeminiApiKey() {
+      return sessionStorage.getItem('gemini_user_api_key') || "";
+    }
+
+    // Otomatis isi kolom input jika sebelumnya sudah tersimpan di sesi ini
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedKey = sessionStorage.getItem('gemini_user_api_key');
+      if (savedKey) {
+        document.getElementById('geminiApiKeyInput').value = savedKey;
+      }
+    });
+    
+    const charts = {};
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').value = todayStr;
+    document.getElementById('endDate').value = todayStr;
+
+    const COLOR_A = 'rgb(239, 68, 68)';   
+    const COLOR_B = 'rgb(245, 158, 11)';  
+    const COLOR_C = 'rgb(59, 130, 246)';  
+    const COLOR_TOT = 'rgb(16, 185, 129)';
+
+    function createOrUpdateChart(canvasId, labels, datasets) {
+      if (charts[canvasId]) {
+        charts[canvasId].data.labels = labels;
+        charts[canvasId].data.datasets = datasets;
+        charts[canvasId].update();
+      } else {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        charts[canvasId] = new Chart(ctx, {
+          type: 'line',
+          data: { labels, datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+              x: { display: true, title: { display: true, text: 'Waktu' } },
+              y: { display: true, beginAtZero: false }
             },
-            {
-                label: "Dave Chappelle",
-                title: "Perbedaan Naik Pesawat First Class",
-                transcript: "I was flying first class the other day, and let me tell you, poor people and rich people experience turbulence very differently. Poor people pray to God. Rich people look at their watches and calculate delay compensation."
-            },
-            {
-                label: "Russell Peters",
-                title: "Tawar Menawar Khas Orang Asia",
-                transcript: "Some people bargain for fun. Asians bargain for sport! You go to a market, the guy says '10 dollars'. An Asian dad will say 'I give you 2 dollars and a pouch of tea'. And somehow the deal gets done!"
-            }
-        ];
+            elements: { point: { radius: 2 } }
+          }
+        });
+      }
+    }
 
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            renderSampleButtons();
-            loadStoredApiKey();
+    function formatTimestamp(tsStr) {
+      if (!tsStr || tsStr.length < 12) return tsStr;
+      const yr = tsStr.substring(0, 4);
+      const mo = tsStr.substring(4, 6);
+      const dy = tsStr.substring(6, 8);
+      const hr = tsStr.substring(8, 10);
+      const mi = tsStr.substring(10, 12);
+      return `${hr}:${mi} (${dy}/${mo})`;
+    }
+
+    // Fungsi untuk memanggil Google Gemini API
+    async function generateAIAnalysis(summaryDataJson) {
+      const aiStatus = document.getElementById('aiStatus');
+      const aiContent = document.getElementById('aiContent');
+
+      const activeApiKey = getGeminiApiKey();
+      if (!activeApiKey) {
+        aiStatus.innerText = "API Key Belum Diisi";
+        aiStatus.className = "text-xs bg-red-500/20 text-red-300 px-3 py-1 rounded-full border border-red-500/30";
+        aiContent.innerHTML = `<span class="text-red-400">Mohon masukkan dan simpan Gemini API Key terlebih dahulu pada kolom di bagian atas halaman sebelum menjalankan analisis AI.</span>`;
+        return;
+      }
+
+      aiStatus.innerText = "Sedang Menganalisis...";
+      aiStatus.className = "text-xs bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full border border-yellow-500/30";
+      aiContent.innerHTML = `<span class="animate-pulse text-slate-400">AI sedang memproses data telemetri berdasarkan standar IEEE 519 & IEC 61000...</span>`;
+
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${activeApiKey}`;
+
+      const promptText = `
+Anda adalah seorang Ahli Sistem Tenaga Listrik dan Power Quality Engineer. 
+Berikut adalah ringkasan data telemetri power meter 3-fase dalam format JSON:
+${JSON.stringify(summaryDataJson)}
+
+Tolong buatkan laporan analisis kehandalan dan kualitas daya listrik dalam **Bahasa Indonesia**.
+Berikan pengantar diatas bahwa laporan ini dibuat oleh divisi Smart Energy - USSC Unesa Surabaya.
+Format utama jawaban Anda WAJIB berupa sebuah tabel Markdown yang rapi dengan kolom persis seperti berikut:
+| Aspek | IEEE 519 | IEC 61000 | PP 33/2023 (Audit Energi) | Status |
+
+Berikan kalimat pengantar singkat di bagian atas tabel dan pastikan tabel mencakup parameter seperti Tegangan, THD Tegangan, Ketidakseimbangan (Voltage Unbalance), dan Faktor Daya (PF).
+Pada bagian akhir laporan tambahkan 2 item :
+1. kesimpulan dari pengukuran kualitas kelistrikan 
+2. saran untuk perbaikan jika hasil kesimpulan kualitas kelistrikan dibawah standar
+
+INSTRUKSI PENTING PENULISAN:
+- JANGAN PERNAH menggunakan simbol dolar ($), backtick ganda, atau format LaTeX/MathJax untuk membungkus angka, satuan persen (%), atau variabel apa pun. 
+- Tuliskan angka dan satuan secara natural (Contoh: tulis "Maksimal 8%" atau "< 5%", BUKAN "$8%$" atau "$< 5\%$").
+- Pada kolom "PP 33/2023 (Audit Energi)", berikan evaluasi singkat apakah parameter tersebut sesuai dengan standar efisiensi energi atau ketentuan audit (misalnya manajemen beban, faktor daya minimum, atau efisiensi pemanfaatan tenaga listrik). 
+      `;
+
+      try {
+        const response = await fetch(geminiEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptText }] }]
+          })
         });
 
-        // Load & Check Stored API Key
-        function loadStoredApiKey() {
-            const inputField = document.getElementById('geminiApiKeyInput');
-            if (apiKey) {
-                inputField.value = apiKey;
-                updateKeyStatusUI(true);
-            } else {
-                updateKeyStatusUI(false);
-            }
+        const result = await response.json();
+        
+        if (result.candidates && result.candidates[0].content.parts[0].text) {
+          const aiText = result.candidates[0].content.parts[0].text;
+          
+          // Menggunakan marked.js untuk merender Markdown menjadi HTML
+          aiContent.innerHTML = marked.parse(aiText);
+          
+          aiStatus.innerText = "Analisis Selesai";
+          aiStatus.className = "text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30";
+        } else {
+          throw new Error("Format respons Gemini tidak valid atau kosong.");
         }
 
-        // Save API Key from Prominent Input
-        function saveApiKeyFromInput() {
-            const inputVal = document.getElementById('geminiApiKeyInput').value.trim();
-            if (!inputVal) {
-                showToast('Masukkan string Gemini API Key terlebih dahulu!', 'error');
-                return;
-            }
-            apiKey = inputVal;
-            localStorage.setItem('GEMINI_API_KEY', apiKey);
-            updateKeyStatusUI(true);
-            showToast('Gemini API Key berhasil disimpan!', 'success');
-        }
+      } catch (err) {
+        console.error("AI Error:", err);
+        aiContent.innerText = "Gagal memuat analisis AI. Pastikan Gemini API Key valid.";
+        aiStatus.innerText = "Gagal";
+        aiStatus.className = "text-xs bg-red-500/20 text-red-300 px-3 py-1 rounded-full border border-red-500/30";
+      }
+    }
 
-        // Clear Stored API Key
-        function clearApiKey() {
-            apiKey = "";
-            localStorage.removeItem('GEMINI_API_KEY');
-            document.getElementById('geminiApiKeyInput').value = "";
-            updateKeyStatusUI(false);
-            showToast('API Key telah dihapus.', 'info');
-        }
+    async function loadAllData() {
+      const startDateStr = document.getElementById('startDate').value;
+      const endDateStr = document.getElementById('endDate').value;
+      const btn = document.getElementById('btnFetch');
 
-        // Update UI Status Badge
-        function updateKeyStatusUI(isActive) {
-            const badge = document.getElementById('keyStatusBadge');
-            if (isActive) {
-                badge.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Key Active`;
-            } else {
-                badge.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> API Key Belum Set`;
-            }
-        }
+      if (!startDateStr || !endDateStr) {
+        alert("Pilih tanggal mulai dan tanggal selesai terlebih dahulu.");
+        return;
+      }
 
-        // Toggle Key Field Password Visibility
-        function toggleKeyVisibility() {
-            const input = document.getElementById('geminiApiKeyInput');
-            const eyeIcon = document.getElementById('eyeIcon');
-            if (input.type === "password") {
-                input.type = "text";
-                eyeIcon.className = "fa-solid fa-eye-slash";
-            } else {
-                input.type = "password";
-                eyeIcon.className = "fa-solid fa-eye";
-            }
-        }
+      const start = new Date(startDateStr);
+      const end = new Date(endDateStr);
 
-        // Ensure Key is Available Before Calling Gemini
-        function checkApiKey() {
-            if (!apiKey) {
-                showToast('Harap masukkan & simpan Gemini API Key di bagian atas terlebih dahulu!', 'error');
-                document.getElementById('geminiApiKeyInput').focus();
-                return false;
-            }
-            return true;
-        }
+      if (start > end) {
+        alert("Tanggal mulai tidak boleh lebih besar dari tanggal selesai.");
+        return;
+      }
 
-        // Render Preset Sample Buttons
-        function renderSampleButtons() {
-            const container = document.getElementById('sampleButtonsContainer');
-            container.innerHTML = sampleStandups.map((s, idx) => `
-                <button onclick="loadSample(${idx})" class="text-xs bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-quote-left text-brand-400 text-[10px]"></i>
-                    <span>${s.label}</span>
-                </button>
-            `).join('');
-        }
+      btn.innerText = "Memuat Data Pengukuran...";
+      btn.disabled = true;
 
-        function loadSample(index) {
-            const sample = sampleStandups[index];
-            document.getElementById('englishTranscript').value = sample.transcript;
-            showToast(`Materi ${sample.label} dimuat!`, 'info');
-        }
+      let allCombinedRawData = [];
+      let detectedImei = "-";
 
-        function extractFromUrl() {
-            const url = document.getElementById('youtubeUrl').value.trim();
-            if (!url) {
-                showToast('Masukkan link YouTube terlebih dahulu!', 'error');
-                return;
-            }
-            showToast('Memuat informasi materi dari YouTube...', 'info');
-            // Mock sample fill for YouTube input
-            document.getElementById('englishTranscript').value = "So I was watching YouTube standup routines yesterday, and I realized comedians never run out of problems because their entire life is just one big series of unfortunate choices!";
-        }
+      let currentDate = new Date(start);
+      
+      try {
+        while (currentDate <= end) {
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const day = String(currentDate.getDate()).padStart(2, '0');
+          const dateString = `${year}-${month}-${day}`;
 
-        // STEP 1 -> STEP 2: Gemini 3.1 Flash Comedy Translation & Adaptation
-        async function generateComedyScript() {
-            if (!checkApiKey()) return;
+          const limitPerDay = 96; 
+          const targetUrl = `https://monacolisa.fulindo.co.id/api/energy?api_key=${APP_API_KEY}&tanggal=${dateString}&page=1&limit=${limitPerDay}`;
 
-            const englishText = document.getElementById('englishTranscript').value.trim();
-            if (!englishText) {
-                showToast('Harap masukkan transkrip komedi bahasa asing terlebih dahulu!', 'error');
-                return;
-            }
+          try {
+            const res = await corsfix.fetch(targetUrl);
+            const json = await res.json();
 
-            const btn = document.getElementById('btnAdapt');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Mengadaptasi Komedi...`;
-
-            const systemPrompt = `Anda adalah seorang Komika Stand-Up Comedy Indonesia berpengalaman. 
-Tugas Anda adalah mengadaptasi materi komedi asing berikut ke dalam Bahasa Indonesia.
-PENTING: Jangan terjemahkan kata-demi-kata (harfiah). Ubah analogi, budaya, dan leluconnya agar cocok dengan kultur & gaya bahasa komedi santai/gaul Indonesia (menggunakan kata seperti 'gua', 'lu', 'malah', 'anjrit', dsb sesuai konteks).
-Pastikan memiliki struktur:
-1. Setup (Pembangun suasana)
-2. Punchline (Titik lucu yang mengejutkan)
-
-Gunakan penanda vokal berikut di dalam teks jika diperlukan untuk membantu pembaca audio:
-- [jeda] untuk penekanan sebelum punchline
-- [nada tinggi] atau [bisik-bisik] untuk ekspresi vokal
-
-Hasilkan HANYA naskah komedinya saja tanpa pendahuluan atau salam penutup.`;
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: englishText }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.error?.message || 'Gagal memproses dengan Gemini API');
+            if (json.status === "success" && json.data && json.data.length > 0) {
+              if (detectedImei === "-") {
+                if (json.pagination && json.pagination.filter && json.pagination.filter.device_imei) {
+                  detectedImei = json.pagination.filter.device_imei;
+                } else {
+                  detectedImei = json.data[0].message_id.split('-')[0];
                 }
-
-                const result = await response.json();
-                const adaptedScript = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-                document.getElementById('indonesianScript').value = adaptedScript.trim();
-                showToast('Materi komedi berhasil diadaptasi ke Bahasa Indonesia!', 'success');
-
-                // Auto Scroll to Step 2
-                document.getElementById('indonesianScript').scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            } catch (error) {
-                console.error(error);
-                showToast('Error: ' + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
+              }
+              allCombinedRawData = allCombinedRawData.concat(json.data);
             }
+          } catch (dayErr) {
+            console.warn(`Gagal mengambil data tanggal ${dateString}:`, dayErr);
+          }
+
+          currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        // Polish Punchlines Feature
-        async function polishPunchlines() {
-            if (!checkApiKey()) return;
+        document.getElementById('imeiDisplay').innerText = detectedImei;
 
-            const currentScript = document.getElementById('indonesianScript').value.trim();
-            if (!currentScript) {
-                showToast('Belum ada materi Indonesia untuk dipoles!', 'error');
-                return;
-            }
-
-            showToast('Mempoles punchline agar lebih tajam...', 'info');
-
-            const systemPrompt = "Anda adalah komika pakar punchline. Pertajam naskah stand-up comedy Indonesia ini agar bagian lucunya lebih menohok, singkat, dan mengejutkan. Sisipkan tag [jeda] tepat sebelum punchline utama.";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-preview:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: currentScript }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    const polished = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (polished) {
-                        document.getElementById('indonesianScript').value = polished.trim();
-                        showToast('Punchline berhasil dipertajam!', 'success');
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('Gagal mempoles punchline', 'error');
-            }
+        if (allCombinedRawData.length === 0) {
+          alert("Tidak ada data ditemukan untuk rentang tanggal tersebut.");
+          return;
         }
 
-        // Tag Insertion Helper
-        function insertTag(tag) {
-            const textarea = document.getElementById('indonesianScript');
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const text = textarea.value;
+        const rawData = allCombinedRawData.sort((a, b) => {
+            const timeA = a.timestamp || a.sampled_at || "";
+            const timeB = b.timestamp || b.sampled_at || "";
+            return timeA.localeCompare(timeB);
+        });
+        
+        const timestamps = rawData.map(d => formatTimestamp(d.timestamp || d.sampled_at));
 
-            textarea.value = text.substring(0, start) + " " + tag + " " + text.substring(end);
-            textarea.focus();
-            textarea.selectionStart = textarea.selectionEnd = start + tag.length + 2;
+        const vA = rawData.map(d => d.measurement?.voltage_v?.a ?? 0);
+        const vB = rawData.map(d => d.measurement?.voltage_v?.b ?? 0);
+        const vC = rawData.map(d => d.measurement?.voltage_v?.c ?? 0);
+
+        const iA = rawData.map(d => d.measurement?.current_a?.a ?? 0);
+        const iB = rawData.map(d => d.measurement?.current_a?.b ?? 0);
+        const iC = rawData.map(d => d.measurement?.current_a?.c ?? 0);
+
+        const pA = rawData.map(d => d.measurement?.active_power_w?.a ?? 0);
+        const pB = rawData.map(d => d.measurement?.active_power_w?.b ?? 0);
+        const pC = rawData.map(d => d.measurement?.active_power_w?.c ?? 0);
+
+        const pTot = rawData.map(d => d.measurement?.active_power_w?.total ?? 0);
+
+        const thdV_A = rawData.map(d => d.measurement?.thd_voltage_pct?.a ?? 0);
+        const thdV_B = rawData.map(d => d.measurement?.thd_voltage_pct?.b ?? 0);
+        const thdV_C = rawData.map(d => d.measurement?.thd_voltage_pct?.c ?? 0);
+
+        const thdI_A = rawData.map(d => d.measurement?.thd_current_pct?.a ?? 0);
+        const thdI_B = rawData.map(d => d.measurement?.thd_current_pct?.b ?? 0);
+        const thdI_C = rawData.map(d => d.measurement?.thd_current_pct?.c ?? 0);
+
+        const pfTot = rawData.map(d => d.measurement?.power_factor?.total ?? 0);
+
+        // Render Charts
+        createOrUpdateChart('chartVoltage', timestamps, [
+          { label: 'Phase A (V)', data: vA, borderColor: COLOR_A, backgroundColor: COLOR_A, tension: 0.2 },
+          { label: 'Phase B (V)', data: vB, borderColor: COLOR_B, backgroundColor: COLOR_B, tension: 0.2 },
+          { label: 'Phase C (V)', data: vC, borderColor: COLOR_C, backgroundColor: COLOR_C, tension: 0.2 }
+        ]);
+
+        createOrUpdateChart('chartCurrent', timestamps, [
+          { label: 'Phase A (A)', data: iA, borderColor: COLOR_A, backgroundColor: COLOR_A, tension: 0.2 },
+          { label: 'Phase B (A)', data: iB, borderColor: COLOR_B, backgroundColor: COLOR_B, tension: 0.2 },
+          { label: 'Phase C (A)', data: iC, borderColor: COLOR_C, backgroundColor: COLOR_C, tension: 0.2 }
+        ]);
+
+        createOrUpdateChart('chartActivePowerPhase', timestamps, [
+          { label: 'Phase A (W)', data: pA, borderColor: COLOR_A, backgroundColor: COLOR_A, tension: 0.2 },
+          { label: 'Phase B (W)', data: pB, borderColor: COLOR_B, backgroundColor: COLOR_B, tension: 0.2 },
+          { label: 'Phase C (W)', data: pC, borderColor: COLOR_C, backgroundColor: COLOR_C, tension: 0.2 }
+        ]);
+
+        createOrUpdateChart('chartActivePowerTotal', timestamps, [
+          { label: 'Total Active Power (W)', data: pTot, borderColor: COLOR_TOT, backgroundColor: COLOR_TOT, tension: 0.2 }
+        ]);
+
+        createOrUpdateChart('chartThdVoltage', timestamps, [
+          { label: 'THD Voltage Phase A (%)', data: thdV_A, borderColor: COLOR_A, backgroundColor: COLOR_A, tension: 0.2 },
+          { label: 'THD Voltage Phase B (%)', data: thdV_B, borderColor: COLOR_B, backgroundColor: COLOR_B, tension: 0.2 },
+          { label: 'THD Voltage Phase C (%)', data: thdV_C, borderColor: COLOR_C, backgroundColor: COLOR_C, tension: 0.2 }
+        ]);
+
+        createOrUpdateChart('chartThdCurrent', timestamps, [
+          { label: 'THD Current Phase A (%)', data: thdI_A, borderColor: COLOR_A, backgroundColor: COLOR_A, tension: 0.2 },
+          { label: 'THD Current Phase B (%)', data: thdI_B, borderColor: COLOR_B, backgroundColor: COLOR_B, tension: 0.2 },
+          { label: 'THD Current Phase C (%)', data: thdI_C, borderColor: COLOR_C, backgroundColor: COLOR_C, tension: 0.2 }
+        ]);
+
+        createOrUpdateChart('chartPowerFactor', timestamps, [
+          { label: 'Power Factor Total', data: pfTot, borderColor: COLOR_TOT, backgroundColor: COLOR_TOT, tension: 0.2 }
+        ]);
+
+        document.getElementById('lastUpdated').innerText = `Terakhir diperbarui: ${new Date().toLocaleTimeString('id-ID')} (${rawData.length} data poin)`;
+
+        const sampleStep = Math.max(1, Math.floor(rawData.length / 50));
+        const summarySample = [];
+        for (let i = 0; i < rawData.length; i += sampleStep) {
+          summarySample.push({
+            time: timestamps[i],
+            v: rawData[i].measurement?.voltage_v,
+            i: rawData[i].measurement?.current_a,
+            p_tot: rawData[i].measurement?.active_power_w?.total,
+            thd_v: rawData[i].measurement?.thd_voltage_pct,
+            thd_i: rawData[i].measurement?.thd_current_pct,
+            pf: rawData[i].measurement?.power_factor?.total
+          });
         }
 
-        // STEP 3: Gemini 2.5 Flash TTS Audio Generation (.WAV Output)
-        async function generateAudioWav() {
-            if (!checkApiKey()) return;
+        // Panggil Analisis AI
+        generateAIAnalysis({
+          total_days_analyzed: Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1,
+          total_records: rawData.length,
+          sampled_data: summarySample
+        });
 
-            const scriptText = document.getElementById('indonesianScript').value.trim();
-            if (!scriptText) {
-                showToast('Masukkan teks materi Indonesia terlebih dahulu!', 'error');
-                return;
-            }
+      } catch (err) {
+        console.error("Error fetching multi-day data:", err);
+        alert("Terjadi kesalahan saat menarik data multi-hari.");
+      } finally {
+        btn.innerText = "Tampilkan Data & Analisis AI";
+        btn.disabled = false;
+      }
+    }
 
-            const voiceName = document.getElementById('voiceSelect').value;
-            const speechStyle = document.getElementById('speechStyle').value.trim();
+    // Auto Refresh tiap 10 menit
+    setInterval(() => {
+      loadAllData();
+    }, 600000);
 
-            const btn = document.getElementById('btnGenerateAudio');
-            const originalBtnText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Merender Suara (.WAV)...`;
-
-            // Prompt composition with stylistic guidelines
-            const promptText = `${speechStyle}\n\nBacakan materi stand-up komedi berikut dengan penuh ekspresi:\n${scriptText}`;
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{
-                    parts: [{ text: promptText }]
-                }],
-                generationConfig: {
-                    responseModalities: ["AUDIO"],
-                    speechConfig: {
-                        voiceConfig: {
-                            prebuiltVoiceConfig: { voiceName: voiceName }
-                        }
-                    }
-                }
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.error?.message || 'Gagal menghasilkan audio TTS');
-                }
-
-                const result = await response.json();
-                const part = result?.candidates?.[0]?.content?.parts?.[0];
-                const base64Audio = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType || "";
-
-                if (!base64Audio) {
-                    throw new Error('Respons API tidak mengandung data audio');
-                }
-
-                // Extract Sample Rate from mimeType (e.g. "audio/L16;rate=24000")
-                let sampleRate = 24000; // default
-                const rateMatch = mimeType.match(/rate=(\d+)/);
-                if (rateMatch && rateMatch[1]) {
-                    sampleRate = parseInt(rateMatch[1], 10);
-                }
-
-                // Convert Base64 PCM16 to ArrayBuffer & Build WAV
-                const pcmBuffer = base64ToArrayBuffer(base64Audio);
-                const pcm16 = new Int16Array(pcmBuffer);
-                const wavBlob = pcmToWav(pcm16, sampleRate);
-
-                // Create Object URL for Audio Player
-                const audioUrl = URL.createObjectURL(wavBlob);
-                const player = document.getElementById('mainAudioPlayer');
-                player.src = audioUrl;
-
-                // Setup Download Link
-                const downloadBtn = document.getElementById('downloadWavBtn');
-                downloadBtn.href = audioUrl;
-                downloadBtn.download = `standup_komedi_${voiceName.toLowerCase()}_${Date.now()}.wav`;
-
-                // Show Player Container
-                document.getElementById('audioPlayerCard').classList.remove('hidden');
-                document.getElementById('audioMetadata').textContent = `Suara: ${voiceName} | Sample Rate: ${sampleRate}Hz | WAV PCM 16-bit`;
-
-                showToast('Audio stand-up komedi (.WAV) berhasil dibuat!', 'success');
-                player.play();
-
-            } catch (error) {
-                console.error(error);
-                showToast('Gagal memproses Audio: ' + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalBtnText;
-            }
-        }
-
-        // Helper: Base64 string to ArrayBuffer
-        function base64ToArrayBuffer(base64) {
-            const binaryString = window.atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        // Helper: Convert PCM 16-bit data to valid WAV Blob File
-        function pcmToWav(pcm16Array, sampleRate) {
-            const numChannels = 1;
-            const bytesPerSample = 2;
-            const blockAlign = numChannels * bytesPerSample;
-            const byteRate = sampleRate * blockAlign;
-            const dataSize = pcm16Array.length * bytesPerSample;
-            const buffer = new ArrayBuffer(44 + dataSize);
-            const view = new DataView(buffer);
-
-            /* RIFF Chunk Descriptor */
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + dataSize, true);
-            writeString(view, 8, 'WAVE');
-
-            /* fmt Sub-chunk */
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
-            view.setUint16(20, 1, true);  // AudioFormat (1 for PCM)
-            view.setUint16(22, numChannels, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, byteRate, true);
-            view.setUint16(32, blockAlign, true);
-            view.setUint16(34, 16, true); // BitsPerSample
-
-            /* data Sub-chunk */
-            writeString(view, 36, 'data');
-            view.setUint32(40, dataSize, true);
-
-            // Write PCM audio samples
-            let offset = 44;
-            for (let i = 0; i < pcm16Array.length; i++, offset += 2) {
-                view.setInt16(offset, pcm16Array[i], true);
-            }
-
-            return new Blob([buffer], { type: 'audio/wav' });
-        }
-
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) {
-                view.setUint8(offset + i, string.charCodeAt(i));
-            }
-        }
-
-        // Toast Notification System
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            const toastContent = document.getElementById('toastContent');
-            const toastMessage = document.getElementById('toastMessage');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMessage.textContent = message;
-
-            if (type === 'success') {
-                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
-            } else if (type === 'error') {
-                toastIcon.className = 'fa-solid fa-triangle-exclamation text-red-400';
-            } else {
-                toastIcon.className = 'fa-solid fa-circle-info text-amber-400';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3500);
-        }
-    </script>
+    window.onload = loadAllData;
+  </script>
 </body>
 </html>

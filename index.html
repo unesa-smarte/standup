@@ -3,47 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ComedyVoice AI - Stand Up Comedy TTS & Translator</title>
+    <title>Stand-Up Comedy TTS & Translation Studio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                            700: '#6d28d9',
-                            900: '#4c1d95',
-                        },
-                        accent: '#ec4899'
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            900: '#7c2d12',
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .glow-effect {
-            box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.3);
-        }
-        /* Custom scrollbar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -62,529 +54,521 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased">
 
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-    <!-- Header Navigation -->
-    <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-40">
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20">
-                    <i class="fa-solid fa-microphone-lines"></i>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-microphone-lines text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
-                        OpenMic <span class="gradient-text font-extrabold">Studio AI</span>
+                    <h1 class="font-bold text-base sm:text-lg text-slate-100 flex items-center gap-2">
+                        Stand-Up TTS Studio
+                        <span class="text-[10px] bg-brand-500/10 text-brand-400 border border-brand-500/20 px-2 py-0.5 rounded-full font-semibold">
+                            Gemini 3.1 & 2.5
+                        </span>
                     </h1>
-                    <p class="text-xs text-slate-400">Stand-Up Comedy Adaptation & Voice Generator</p>
+                    <p class="text-xs text-slate-400 hidden sm:block">Ubah Materi Komedi Asing menjadi Bahasa Indonesia & Suara Komika (.WAV)</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Gemini 3.1 & 2.5 TTS
+            <div class="flex items-center gap-2">
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="hidden sm:flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-medium px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 transition-all">
+                    <i class="fa-solid fa-key"></i> Dapatkan API Key Gratis
+                </a>
+                <span id="keyStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    API Key Belum Set
                 </span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
-
-        <!-- Banner Intro -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 border border-slate-800 p-6 sm:p-8">
-            <div class="relative z-10 max-w-3xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-brand-500/20 text-brand-300 text-xs font-semibold mb-3 border border-brand-500/30">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Comedy Translator & Speech Lab
+    <!-- PROMINENT GEMINI API KEY INPUT BANNER (SIAP UPLOAD GITHUB) -->
+    <section class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border-b border-amber-500/30 p-4 sm:p-6 shadow-xl relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                <div class="flex items-start gap-3.5">
+                    <div class="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 mt-1 sm:mt-0">
+                        <i class="fa-solid fa-shield-halved text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
+                            Pengaturan Gemini API Key
+                            <span class="text-[11px] font-normal text-slate-400">(Wajib untuk GitHub Pages)</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">
+                            Key disimpan aman secara lokal di browser (<code class="text-amber-300">localStorage</code>) dan tidak pernah dikirim ke server pihak ketiga.
+                        </p>
+                    </div>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">
-                    Ubah Materi Stand-Up Luar Negeri Jadi Komedi Lokal & Audio WAV
-                </h2>
-                <p class="text-slate-300 text-sm sm:text-base">
-                    Tempelkan link YouTube atau transkrip komika favoritmu. AI akan melokalisasi lelucon, menyesuaikan punchline ke kultur Indonesia, dan mengubahnya menjadi sampel suara siap dengar & download!
-                </p>
-            </div>
-            <div class="absolute -right-10 -bottom-10 opacity-10 text-brand-500 text-9xl pointer-events-none">
-                <i class="fa-solid fa-[#fa-masks-theater]"></i>
+
+                <div class="w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <div class="relative flex-1 sm:w-80">
+                        <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                        <input type="password" id="geminiApiKeyInput" placeholder="Masukkan Gemini API Key (AIzaSy...)" 
+                               class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-mono transition-all">
+                        <button onclick="toggleKeyVisibility()" type="button" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs p-1">
+                            <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="saveApiKeyFromInput()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/10">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Key
+                        </button>
+                        <button onclick="clearApiKey()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs transition-all border border-slate-700" title="Hapus Key">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Workflow Stepper Layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-            <!-- LEFT COLUMN: Input & Settings (5 Cols) -->
-            <div class="lg:col-span-5 flex flex-col gap-6">
-
-                <!-- STEP 1: Link Youtube / Text Source -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col gap-4 glow-effect">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-base text-white flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand-600 text-xs flex items-center justify-center font-bold">1</span>
-                            Sumber Materi Komedi
-                        </h3>
-                        <span class="text-xs text-slate-400">YouTube / Teks</span>
-                    </div>
-
-                    <!-- YouTube Link Input -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Link YouTube Stand-Up Komedi</label>
-                        <div class="relative">
-                            <input type="text" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." 
-                                   class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 pl-10 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors">
-                            <i class="fa-brands fa-youtube absolute left-3.5 top-3.5 text-red-500 text-base"></i>
-                        </div>
-                        <p class="text-[11px] text-slate-500 mt-1">AI akan mencari materi & konteks dari video ini menggunakan Google Search Grounding.</p>
-                    </div>
-
-                    <!-- Manual Transcript Optional -->
-                    <div>
-                        <div class="flex justify-between items-center mb-1.5">
-                            <label class="block text-xs font-semibold text-slate-300">Atau Paste Transkrip Bahasa Inggris</label>
-                            <span class="text-[10px] text-slate-400">(Opsional jika link YouTube tidak publik)</span>
-                        </div>
-                        <textarea id="englishTranscript" rows="4" placeholder="Paste materi bahasa Inggris di sini jika ada..." 
-                                  class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors resize-none"></textarea>
-                    </div>
-
-                    <!-- Sample Presets -->
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-2">Atau Coba Contoh Materi Populer:</label>
-                        <div class="flex flex-wrap gap-1.5" id="sampleContainer">
-                            <!-- JS will inject sample buttons -->
-                        </div>
-                    </div>
-
-                    <!-- Comedy Customization Settings -->
-                    <div class="border-t border-slate-800/80 pt-4 flex flex-col gap-3">
-                        <label class="block text-xs font-semibold text-slate-300">Gaya & Dialek Komedi Indonesia</label>
-                        
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-[10px] text-slate-400 block mb-1">Gaya Lelucon</label>
-                                <select id="comedyStyle" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
-                                    <option value="Observasional & Santai">Observasional (Keseharian)</option>
-                                    <option value="Sarkastik & Datar (Dry Humor)">Sarkastik & Dry Humor</option>
-                                    <option value="Self-Deprecating (Ngeledek Diri)">Self-Deprecating</option>
-                                    <option value="Ekspresif & Histeris">Ekspresif / Enerjik</option>
-                                    <option value="Absurd & Storytelling">Absurd & Storytelling</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] text-slate-400 block mb-1">Gaya Bahasa</label>
-                                <select id="indonesianDialect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
-                                    <option value="Bahasa Indonesia Gaul Jakarta">Jakarta / Gaul (Gua/Lu)</option>
-                                    <option value="Bahasa Indonesia Santai & Akrab">Santai Casual (Aku/Kamu/Kalian)</option>
-                                    <option value="Komedi Formal Srimulat/Logis">Formal Berwibawa tapi Lucu</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Generate Script Button -->
-                    <button id="btnGenerateScript" onclick="generateComedyScript()" 
-                            class="w-full mt-2 bg-gradient-to-r from-brand-600 to-accent hover:from-brand-500 hover:to-pink-500 text-white font-semibold py-3 px-4 rounded-xl text-sm shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2 group">
-                        <i class="fa-solid fa-wand-sparkles group-hover:rotate-12 transition-transform"></i>
-                        Adaptasi Materi ke Indonesia
-                    </button>
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+        
+        <!-- STEP 1: INPUT YOUTUBE LINK & TRANSCRIPT -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-brand-500/5 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-7 h-7 rounded-lg bg-brand-500/20 text-brand-400 font-bold text-xs flex items-center justify-center border border-brand-500/30">1</span>
+                    <h2 class="font-bold text-slate-200 text-sm sm:text-base">Materi Komedi Luar Negeri (Input)</h2>
                 </div>
-
+                <div class="text-xs text-slate-400">Gunakan sampel atau tempel transkrip</div>
             </div>
 
-            <!-- RIGHT COLUMN: Script Editor & Voice Synthesis (7 Cols) -->
-            <div class="lg:col-span-7 flex flex-col gap-6">
-
-                <!-- STEP 2: Indonesian Script Editor -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col gap-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-base text-white flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand-600 text-xs flex items-center justify-center font-bold">2</span>
-                            Naskah Stand-Up Indonesia
-                        </h3>
-                        <div class="flex gap-2">
-                            <button onclick="copyScriptText()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1">
-                                <i class="fa-regular fa-copy"></i> Salin
-                            </button>
-                            <button onclick="polishPunchlines()" class="text-xs bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-800/50 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1">
-                                <i class="fa-solid fa-fire"></i> Pertajam Punchline
-                            </button>
-                        </div>
-                    </div>
-
-                    <p class="text-xs text-slate-400">
-                        Anda dapat mengedit naskah di bawah ini secara manual. Tip: Gunakan tanda baca koma atau titik untuk memberi jeda alami pada komika.
-                    </p>
-
-                    <!-- Text Area Script -->
-                    <div class="relative">
-                        <textarea id="indonesianScript" rows="7" 
-                                  placeholder="Materi hasil terjemahan & adaptasi akan muncul di sini... Anda juga bisa langsung mengetik naskah sendiri."
-                                  class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-brand-500 leading-relaxed transition-colors resize-y font-sans"></textarea>
-                        
-                        <!-- Script Overlay Loading -->
-                        <div id="scriptLoadingOverlay" class="hidden absolute inset-0 bg-slate-950/90 rounded-xl backdrop-blur-sm flex flex-col items-center justify-center gap-3">
-                            <div class="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-                            <p class="text-xs text-brand-300 font-medium animate-pulse" id="loadingStatusText">Sedang menganalisis & menyusun lelucon...</p>
-                        </div>
-                    </div>
-
-                    <!-- Quick Voice Style Annotations -->
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-[11px] text-slate-400">Pemberian Nada Bicara:</span>
-                        <button onclick="appendInstruction(' [bicara cepat] ')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded border border-slate-700">+ [bicara cepat]</button>
-                        <button onclick="appendInstruction(' [jeda sebentar] ')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded border border-slate-700">+ [jeda]</button>
-                        <button onclick="appendInstruction(' [nada sarkastik] ')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded border border-slate-700">+ [sarkastik]</button>
-                        <button onclick="appendInstruction(' [nada bingung] ')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded border border-slate-700">+ [bingung]</button>
+            <!-- YouTube URL & Sample Selector -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">
+                        <i class="fa-brands fa-youtube text-red-500 mr-1"></i> Link YouTube Stand-Up Komedi (Opsional)
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." 
+                               class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition-colors">
+                        <button onclick="extractFromUrl()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-link text-brand-400"></i> Muat Info
+                        </button>
                     </div>
                 </div>
 
-                <!-- STEP 3: Voice Studio (TTS Config & Audio Output) -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col gap-5">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-base text-white flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand-600 text-xs flex items-center justify-center font-bold">3</span>
-                            Pengaturan Suara TTS Stand-Up
-                        </h3>
-                        <span class="text-xs text-emerald-400 font-medium">Gemini 2.5 TTS</span>
+                <!-- Sample Presets Buttons -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Atau pilih contoh materi komika ternama:</label>
+                    <div class="flex flex-wrap gap-2" id="sampleButtonsContainer">
+                        <!-- Loaded dynamically -->
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Speaker Selection -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Karakter / Suara Pengisi</label>
-                            <select id="voiceNameSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
-                                <option value="Puck">Puck (Upbeat, Enerjik & Santai)</option>
-                                <option value="Zephyr" selected>Zephyr (Bright, Jelas & Ekspresif)</option>
-                                <option value="Kore">Kore (Firm, Serius & Stand-Up Datar)</option>
-                                <option value="Fenrir">Fenrir (Excitable, Penuh Semangat)</option>
-                                <option value="Aoede">Aoede (Breezy, Kasual)</option>
-                                <option value="Charon">Charon (Informative, Berat)</option>
-                                <option value="Sulafat">Sulafat (Warm, Ramah)</option>
-                            </select>
-                        </div>
+                <!-- Foreign Script Textarea -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">
+                        Transkrip Materi Bahasa Asing / Inggris
+                    </label>
+                    <textarea id="englishTranscript" rows="4" 
+                              placeholder="Tempelkan teks materi komedi luar negeri di sini..." 
+                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-brand-500 transition-colors leading-relaxed font-sans"></textarea>
+                </div>
 
-                        <!-- Speech Tone/Emotion Delivery -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Emosi Penyampaian Suara</label>
-                            <select id="voiceEmotionSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
-                                <option value="Stand-up comedian delivery with expressive timing and punchline emphasis">Komika Stand-Up Ekspresif (Default)</option>
-                                <option value="Very sarcastic, dry humor tone with slow pauses">Sarkastik & Dry Humor (Datar)</option>
-                                <option value="High energy, laughing slightly, fast paced comedic story">High Energy & Antusias</option>
-                                <option value="Casual conversation tone like talking to a friend at a cafe">Santai Kasual (Seperti Nongkrong)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Generate Audio Button -->
-                    <button id="btnGenerateAudio" onclick="generateAudioWav()" 
-                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl text-sm shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-volume-high"></i>
-                        Proses Audio Suara (WAV)
+                <div class="flex justify-end">
+                    <button onclick="generateComedyScript()" id="btnAdapt" class="bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-brand-600/20 flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Ubah ke Komedi Indonesia (AI)
                     </button>
-
-                    <!-- Audio Player Box -->
-                    <div id="audioPlayerContainer" class="hidden mt-2 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></div>
-                                <span class="text-xs font-bold text-slate-200">Audio Stand-Up Siap</span>
-                            </div>
-                            <span id="audioDurationText" class="text-[11px] font-mono text-slate-400">00:00</span>
-                        </div>
-
-                        <audio id="mainAudioPlayer" controls class="w-full h-10 accent-brand-500"></audio>
-
-                        <div class="flex justify-end gap-2 pt-1">
-                            <a id="btnDownloadWav" download="materi-standup-komedi.wav" 
-                               class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-2 shadow-md">
-                                <i class="fa-solid fa-download"></i> Unduh File WAV
-                            </a>
-                        </div>
-                    </div>
-
                 </div>
+            </div>
+        </section>
 
+        <!-- STEP 2: INDONESIAN COMEDY SCRIPT EDITOR -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center border border-emerald-500/30">2</span>
+                    <h2 class="font-bold text-slate-200 text-sm sm:text-base">Adaptasi Materi Bahasa Indonesia & Tone Komika</h2>
+                </div>
+                <button onclick="polishPunchlines()" class="text-xs text-amber-400 hover:underline flex items-center gap-1">
+                    <i class="fa-solid fa-bolt"></i> Pertajam Punchline
+                </button>
             </div>
 
-        </div>
+            <!-- Quick Action Tags -->
+            <div class="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
+                <span class="text-slate-400 mr-1 text-[11px]">Penyelarasan Vokal:</span>
+                <button onclick="insertTag('[jeda]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [jeda]</button>
+                <button onclick="insertTag('[nada tinggi]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [nada tinggi]</button>
+                <button onclick="insertTag('[bisik-bisik]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [bisik-bisik]</button>
+                <button onclick="insertTag('[tertawa kecil]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [tertawa kecil]</button>
+                <button onclick="insertTag('[tempo cepat]')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono text-[11px]">+ [tempo cepat]</button>
+            </div>
+
+            <!-- Indonesian Script Input -->
+            <div class="space-y-4">
+                <textarea id="indonesianScript" rows="6" 
+                          placeholder="Materi hasil adaptasi ke bahasa Indonesia akan muncul di sini. Anda juga dapat mengeditnya secara manual..." 
+                          class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-emerald-500 transition-colors leading-relaxed font-sans"></textarea>
+            </div>
+        </section>
+
+        <!-- STEP 3: VOICE CONFIGURATION & AUDIO GENERATION (TTS) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 font-bold text-xs flex items-center justify-center border border-sky-500/30">3</span>
+                    <h2 class="font-bold text-slate-200 text-sm sm:text-base">Pengaturan Suara Komika & Ekspor Audio (.WAV)</h2>
+                </div>
+                <div class="text-xs text-sky-400 font-semibold">Gemini 2.5 Flash TTS</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Voice Selection -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Pilih Karakter Suara Komika</label>
+                    <select id="voiceSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
+                        <option value="Zephyr">Zephyr (Energik, Ceria & Nyaring)</option>
+                        <option value="Puck" selected>Puck (Antusias, Cepat & Humoris)</option>
+                        <option value="Fenrir">Fenrir (Ekspresif, Bernada Tinggi & Agresif)</option>
+                        <option value="Kore">Kore (Tegas & Berwibawa)</option>
+                        <option value="Aoede">Aoede (Santai & Kasual)</option>
+                        <option value="Charon">Charon (Berat & Serius)</option>
+                        <option value="Sulafat">Sulafat (Hangat & Ramah)</option>
+                    </select>
+                </div>
+
+                <!-- Speech Style / Tone Instruction -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Gaya Penyampaian (Style Prompt)</label>
+                    <input type="text" id="speechStyle" value="Bicara seperti komika stand-up Indonesia profesional. Berikan nada antusias, intonasi lelucon yang natural, tempo variatif, dan beri penekanan pada kata punchline." 
+                           class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="flex justify-center mb-6">
+                <button onclick="generateAudioWav()" id="btnGenerateAudio" class="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-sky-600/20 flex items-center gap-2.5">
+                    <i class="fa-solid fa-play"></i> Generate Stand-Up Audio (.WAV)
+                </button>
+            </div>
+
+            <!-- AUDIO PLAYER CONTAINER -->
+            <div id="audioPlayerCard" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30">
+                            <i class="fa-solid fa-volume-high text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">Hasil Rekaman Stand-Up Komedi</div>
+                            <div class="text-[11px] text-slate-400" id="audioMetadata">Format: WAV | PCM 16-bit</div>
+                        </div>
+                    </div>
+                    <!-- Download WAV Button -->
+                    <a id="downloadWavBtn" download="standup_comedy_indonesia.wav" href="#" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-md shadow-emerald-600/10">
+                        <i class="fa-solid fa-download"></i> Unduh .WAV
+                    </a>
+                </div>
+
+                <!-- HTML5 Audio Tag -->
+                <audio id="mainAudioPlayer" controls class="w-full h-10 rounded-lg outline-none"></audio>
+            </div>
+        </section>
 
     </main>
 
+    <!-- Toast Notification Container -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div id="toastContent" class="bg-slate-800 border border-slate-700 text-slate-100 px-4 py-3 rounded-xl shadow-2xl text-xs flex items-center gap-2.5">
+            <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400"></i>
+            <span id="toastMessage">Pesan Notifikasi</span>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="border-t border-slate-800/80 bg-slate-900/40 py-4 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-            Powered by Gemini 3.1 Flash & Gemini 2.5 Flash Speech API • Khusus Adaptasi Stand-Up Komedi
+    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4">
+            Stand-Up Comedy TTS & Translation Studio &bull; Powered by Gemini 3.1 & Gemini 2.5 Flash API
         </div>
     </footer>
 
     <!-- JavaScript Logic -->
     <script>
-        // Default API key handled dynamically by runtime
-        const apiKey = "";
+        // Global State & API Key Management
+        let apiKey = localStorage.getItem('GEMINI_API_KEY') || "";
 
-        // Preset Stand-Up Material Samples for easy testing
+        // Sample Stand-Up Comedy Materials
         const sampleStandups = [
             {
-                comedian: "Gabriel Iglesias (Fluffy)",
-                title: "Level Kegemukan & Makanan",
-                url: "https://www.youtube.com/watch?v=2345678",
-                transcript: "I learned there are 5 levels of fatness. Big, Healthy, Husky, Fluffy, and DAMN! My doctor told me I reached level 5. I said doctor, is there a level 6? He said yes, 'Oh Hell No!'"
+                label: "Gabriel Iglesias (Fluffy)",
+                title: "Level Makanan Pedas & Reaksi Tubuh",
+                transcript: "I love Mexican food, but Mexican food doesn't always love me back. There are five levels of fatness, and then there's Fluffy. When you eat hot sauce in Mexico, they don't ask 'Is it hot?' They ask 'Do you have insurance?'"
             },
             {
-                comedian: "Dave Chappelle",
-                title: "Pelajaran Hidup & Media",
-                url: "https://www.youtube.com/watch?v=1234567",
-                transcript: "You know you're getting old when you watch TV and you see teenagers doing crazy things and instead of thinking 'that looks cool', you think 'where are their parents?'"
+                label: "Dave Chappelle",
+                title: "Perbedaan Naik Pesawat First Class",
+                transcript: "I was flying first class the other day, and let me tell you, poor people and rich people experience turbulence very differently. Poor people pray to God. Rich people look at their watches and calculate delay compensation."
             },
             {
-                comedian: "Russell Peters",
-                title: "Budaya Belanja & Tawar Menawar",
-                url: "https://www.youtube.com/watch?v=3456789",
-                transcript: "Beating your kids build character. In Asia, bargaining is a sport. If you buy something without asking for a discount, the shopkeeper gets offended that you didn't fight!"
+                label: "Russell Peters",
+                title: "Tawar Menawar Khas Orang Asia",
+                transcript: "Some people bargain for fun. Asians bargain for sport! You go to a market, the guy says '10 dollars'. An Asian dad will say 'I give you 2 dollars and a pouch of tea'. And somehow the deal gets done!"
             }
         ];
-
-        // Global State for Audio Blob
-        let currentAudioBlob = null;
 
         // Initialize App
         window.addEventListener('DOMContentLoaded', () => {
             renderSampleButtons();
+            loadStoredApiKey();
         });
 
-        // Render Sample Buttons
+        // Load & Check Stored API Key
+        function loadStoredApiKey() {
+            const inputField = document.getElementById('geminiApiKeyInput');
+            if (apiKey) {
+                inputField.value = apiKey;
+                updateKeyStatusUI(true);
+            } else {
+                updateKeyStatusUI(false);
+            }
+        }
+
+        // Save API Key from Prominent Input
+        function saveApiKeyFromInput() {
+            const inputVal = document.getElementById('geminiApiKeyInput').value.trim();
+            if (!inputVal) {
+                showToast('Masukkan string Gemini API Key terlebih dahulu!', 'error');
+                return;
+            }
+            apiKey = inputVal;
+            localStorage.setItem('GEMINI_API_KEY', apiKey);
+            updateKeyStatusUI(true);
+            showToast('Gemini API Key berhasil disimpan!', 'success');
+        }
+
+        // Clear Stored API Key
+        function clearApiKey() {
+            apiKey = "";
+            localStorage.removeItem('GEMINI_API_KEY');
+            document.getElementById('geminiApiKeyInput').value = "";
+            updateKeyStatusUI(false);
+            showToast('API Key telah dihapus.', 'info');
+        }
+
+        // Update UI Status Badge
+        function updateKeyStatusUI(isActive) {
+            const badge = document.getElementById('keyStatusBadge');
+            if (isActive) {
+                badge.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Key Active`;
+            } else {
+                badge.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> API Key Belum Set`;
+            }
+        }
+
+        // Toggle Key Field Password Visibility
+        function toggleKeyVisibility() {
+            const input = document.getElementById('geminiApiKeyInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (input.type === "password") {
+                input.type = "text";
+                eyeIcon.className = "fa-solid fa-eye-slash";
+            } else {
+                input.type = "password";
+                eyeIcon.className = "fa-solid fa-eye";
+            }
+        }
+
+        // Ensure Key is Available Before Calling Gemini
+        function checkApiKey() {
+            if (!apiKey) {
+                showToast('Harap masukkan & simpan Gemini API Key di bagian atas terlebih dahulu!', 'error');
+                document.getElementById('geminiApiKeyInput').focus();
+                return false;
+            }
+            return true;
+        }
+
+        // Render Preset Sample Buttons
         function renderSampleButtons() {
-            const container = document.getElementById('sampleContainer');
+            const container = document.getElementById('sampleButtonsContainer');
             container.innerHTML = sampleStandups.map((s, idx) => `
-                <button onclick="loadSample(${idx})" class="text-[11px] bg-slate-800/80 hover:bg-brand-950/80 hover:border-brand-500/50 border border-slate-700 text-slate-300 px-2.5 py-1 rounded-lg transition-all text-left flex items-center gap-1.5">
-                    <i class="fa-solid fa-play text-[9px] text-brand-400"></i> ${s.comedian}
+                <button onclick="loadSample(${idx})" class="text-xs bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-quote-left text-brand-400 text-[10px]"></i>
+                    <span>${s.label}</span>
                 </button>
             `).join('');
         }
 
-        // Load Sample into Form
         function loadSample(index) {
             const sample = sampleStandups[index];
-            document.getElementById('youtubeUrl').value = sample.url;
             document.getElementById('englishTranscript').value = sample.transcript;
-            showToast(`Materi ${sample.comedian} dimuat!`, 'info');
+            showToast(`Materi ${sample.label} dimuat!`, 'info');
         }
 
-        // Toast Notification System
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            
-            let bgClass = 'bg-slate-900 border-slate-700 text-slate-200';
-            if (type === 'error') bgClass = 'bg-red-950 border-red-800 text-red-200';
-            if (type === 'success') bgClass = 'bg-emerald-950 border-emerald-800 text-emerald-200';
-
-            toast.className = `pointer-events-auto flex items-center gap-2 px-4 py-2.5 rounded-xl border ${bgClass} shadow-xl text-xs font-medium transition-all duration-300 opacity-0 transform translate-y-2`;
-            toast.innerHTML = `
-                <i class="fa-solid ${type === 'error' ? 'fa-triangle-exclamation text-red-400' : type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-info text-brand-400'}"></i>
-                <span>${message}</span>
-            `;
-
-            container.appendChild(toast);
-            
-            // Animate in
-            setTimeout(() => {
-                toast.classList.remove('opacity-0', 'translate-y-2');
-            }, 10);
-
-            // Remove after 3.5s
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+        function extractFromUrl() {
+            const url = document.getElementById('youtubeUrl').value.trim();
+            if (!url) {
+                showToast('Masukkan link YouTube terlebih dahulu!', 'error');
+                return;
+            }
+            showToast('Memuat informasi materi dari YouTube...', 'info');
+            // Mock sample fill for YouTube input
+            document.getElementById('englishTranscript').value = "So I was watching YouTube standup routines yesterday, and I realized comedians never run out of problems because their entire life is just one big series of unfortunate choices!";
         }
 
-        // Add Quick Annotations to Text
-        function appendInstruction(tag) {
+        // STEP 1 -> STEP 2: Gemini 3.1 Flash Comedy Translation & Adaptation
+        async function generateComedyScript() {
+            if (!checkApiKey()) return;
+
+            const englishText = document.getElementById('englishTranscript').value.trim();
+            if (!englishText) {
+                showToast('Harap masukkan transkrip komedi bahasa asing terlebih dahulu!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btnAdapt');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Mengadaptasi Komedi...`;
+
+            const systemPrompt = `Anda adalah seorang Komika Stand-Up Comedy Indonesia berpengalaman. 
+Tugas Anda adalah mengadaptasi materi komedi asing berikut ke dalam Bahasa Indonesia.
+PENTING: Jangan terjemahkan kata-demi-kata (harfiah). Ubah analogi, budaya, dan leluconnya agar cocok dengan kultur & gaya bahasa komedi santai/gaul Indonesia (menggunakan kata seperti 'gua', 'lu', 'malah', 'anjrit', dsb sesuai konteks).
+Pastikan memiliki struktur:
+1. Setup (Pembangun suasana)
+2. Punchline (Titik lucu yang mengejutkan)
+
+Gunakan penanda vokal berikut di dalam teks jika diperlukan untuk membantu pembaca audio:
+- [jeda] untuk penekanan sebelum punchline
+- [nada tinggi] atau [bisik-bisik] untuk ekspresi vokal
+
+Hasilkan HANYA naskah komedinya saja tanpa pendahuluan atau salam penutup.`;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: englishText }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || 'Gagal memproses dengan Gemini API');
+                }
+
+                const result = await response.json();
+                const adaptedScript = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+                document.getElementById('indonesianScript').value = adaptedScript.trim();
+                showToast('Materi komedi berhasil diadaptasi ke Bahasa Indonesia!', 'success');
+
+                // Auto Scroll to Step 2
+                document.getElementById('indonesianScript').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            } catch (error) {
+                console.error(error);
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Polish Punchlines Feature
+        async function polishPunchlines() {
+            if (!checkApiKey()) return;
+
+            const currentScript = document.getElementById('indonesianScript').value.trim();
+            if (!currentScript) {
+                showToast('Belum ada materi Indonesia untuk dipoles!', 'error');
+                return;
+            }
+
+            showToast('Mempoles punchline agar lebih tajam...', 'info');
+
+            const systemPrompt = "Anda adalah komika pakar punchline. Pertajam naskah stand-up comedy Indonesia ini agar bagian lucunya lebih menohok, singkat, dan mengejutkan. Sisipkan tag [jeda] tepat sebelum punchline utama.";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: currentScript }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const polished = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (polished) {
+                        document.getElementById('indonesianScript').value = polished.trim();
+                        showToast('Punchline berhasil dipertajam!', 'success');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal mempoles punchline', 'error');
+            }
+        }
+
+        // Tag Insertion Helper
+        function insertTag(tag) {
             const textarea = document.getElementById('indonesianScript');
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
             const text = textarea.value;
 
-            textarea.value = text.substring(0, start) + tag + text.substring(end);
+            textarea.value = text.substring(0, start) + " " + tag + " " + text.substring(end);
             textarea.focus();
-            textarea.selectionStart = textarea.selectionEnd = start + tag.length;
+            textarea.selectionStart = textarea.selectionEnd = start + tag.length + 2;
         }
 
-        // Salin Teks Naskah
-        function copyScriptText() {
-            const scriptText = document.getElementById('indonesianScript').value;
-            if (!scriptText.trim()) {
-                showToast('Naskah kosong, tidak ada yang disalin', 'error');
-                return;
-            }
-            
-            const tempInput = document.createElement('textarea');
-            tempInput.value = scriptText;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            showToast('Naskah berhasil disalin ke clipboard!', 'success');
-        }
-
-        // STEP 1 -> STEP 2: Generate Comedy Script with Gemini 3.1 Flash
-        async function generateComedyScript() {
-            const youtubeUrl = document.getElementById('youtubeUrl').value.trim();
-            const englishTranscript = document.getElementById('englishTranscript').value.trim();
-            const comedyStyle = document.getElementById('comedyStyle').value;
-            const indonesianDialect = document.getElementById('indonesianDialect').value;
-
-            if (!youtubeUrl && !englishTranscript) {
-                showToast('Masukkan URL YouTube atau tempel transkrip materi!', 'error');
-                return;
-            }
-
-            const overlay = document.getElementById('scriptLoadingOverlay');
-            const loadingText = document.getElementById('loadingStatusText');
-            overlay.classList.remove('hidden');
-            loadingText.textContent = 'Menganalisis humor & menyesuaikan konteks Indonesia...';
-
-            try {
-                // Construct LLM Prompt
-                const systemPrompt = `Anda adalah Stand-Up Comedian & Comedy Writer senior di Indonesia.
-Tugas Anda adalah membedah materi stand-up komedi bahasa Inggris (dari link YouTube atau teks) dan mengubahnya/melokalisasikannya menjadi naskah Stand-Up Komedi Bahasa Indonesia yang SANGAT LUCU, natural, dan relate dengan penonton Indonesia.
-
-Aturan Penting:
-1. Jangan hanya menerjemahkan kata per kata (literal translation). Adaptasikan joke, analogi, budaya, dan referensi menjadi konteks Indonesia.
-2. Gunakan struktur komedi yang jelas: Premis, Setup, dan Punchline yang kuat.
-3. Gunakan dialek/gaya bahasa: ${indonesianDialect}.
-4. Nuansa komedi: ${comedyStyle}.
-5. Selipkan petunjuk nada vokal dalam kurung seperti [jeda sebentar], [sarkastik], [nada bingung], atau [penekanan] agar cocok dibaca oleh TTS.
-6. Buat naskah langsung siap dibawakan komika (durasi bicara sekitar 30 detik - 1.5 menit).`;
-
-                let userQuery = "";
-                if (englishTranscript) {
-                    userQuery += `Berikut adalah transkrip komedi bahasa Inggris:\n"${englishTranscript}"\n\n`;
-                }
-                if (youtubeUrl) {
-                    userQuery += `Gunakan referensi video YouTube berikut: ${youtubeUrl}\n`;
-                }
-                userQuery += `Ubah materi ini menjadi naskah Stand-Up Komedi Indonesia yang lucu!`;
-
-                const payload = {
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    tools: [{ "google_search": {} }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] }
-                };
-
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (generatedText) {
-                    document.getElementById('indonesianScript').value = generatedText;
-                    showToast('Naskah Komedi Indonesia berhasil dibuat!', 'success');
-                } else {
-                    throw new Error("Gagal mengambil teks dari AI.");
-                }
-
-            } catch (err) {
-                console.error('Error generating script:', err);
-                showToast('Gagal memproses materi AI. Coba gunakan transkrip manual.', 'error');
-            } finally {
-                overlay.classList.add('hidden');
-            }
-        }
-
-        // Pertajam Punchline dengan AI
-        async function polishPunchlines() {
-            const currentScript = document.getElementById('indonesianScript').value.trim();
-            if (!currentScript) {
-                showToast('Tulis atau buat naskah dulu sebelum dipertajam!', 'error');
-                return;
-            }
-
-            const overlay = document.getElementById('scriptLoadingOverlay');
-            const loadingText = document.getElementById('loadingStatusText');
-            overlay.classList.remove('hidden');
-            loadingText.textContent = 'Memoles punchline & menambahkan callback/tag komedi...';
-
-            try {
-                const systemPrompt = `Anda adalah Comedy Doctor / Editor Komedi Stand-Up. Tugas Anda adalah memoles naskah komedi Indonesia yang diberikan agar punchline-nya lebih tajam, lebih kaget (unexpected), dan tempo bicaranya semakin natural. Pertahankan petunjuk vokal seperti [jeda], [penekanan], dll.`;
-
-                const payload = {
-                    contents: [{ parts: [{ text: `Pertajam naskah stand-up berikut agar lebih mematikan lucu:\n\n${currentScript}` }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] }
-                };
-
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                const polishedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (polishedText) {
-                    document.getElementById('indonesianScript').value = polishedText;
-                    showToast('Punchline berhasil dipertajam!', 'success');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('Gagal memoles punchline', 'error');
-            } finally {
-                overlay.classList.add('hidden');
-            }
-        }
-
-        // STEP 3: Generate Speech Audio WAV using Gemini 2.5 Flash TTS
+        // STEP 3: Gemini 2.5 Flash TTS Audio Generation (.WAV Output)
         async function generateAudioWav() {
-            const scriptText = document.getElementById('indonesianScript').value.trim();
-            const voiceName = document.getElementById('voiceNameSelect').value;
-            const emotionStyle = document.getElementById('voiceEmotionSelect').value;
+            if (!checkApiKey()) return;
 
+            const scriptText = document.getElementById('indonesianScript').value.trim();
             if (!scriptText) {
-                showToast('Masukkan naskah komedi terlebih dahulu!', 'error');
+                showToast('Masukkan teks materi Indonesia terlebih dahulu!', 'error');
                 return;
             }
+
+            const voiceName = document.getElementById('voiceSelect').value;
+            const speechStyle = document.getElementById('speechStyle').value.trim();
 
             const btn = document.getElementById('btnGenerateAudio');
-            const originalBtnHtml = btn.innerHTML;
+            const originalBtnText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Merender Suara TTS...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Merender Suara (.WAV)...`;
+
+            // Prompt composition with stylistic guidelines
+            const promptText = `${speechStyle}\n\nBacakan materi stand-up komedi berikut dengan penuh ekspresi:\n${scriptText}`;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: promptText }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: voiceName }
+                        }
+                    }
+                }
+            };
 
             try {
-                // Prompt text with delivery guidance
-                const promptWithEmotion = `Deliver this Indonesian stand-up comedy script in a ${emotionStyle}. Express feelings, pauses, comedic rhythm, and punchline highlights naturally:\n\n"${scriptText}"`;
-
-                const payload = {
-                    contents: [{
-                        parts: [{ text: promptWithEmotion }]
-                    }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: voiceName }
-                            }
-                        }
-                    },
-                    model: "gemini-2.5-flash-preview-tts"
-                };
-
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -592,101 +576,101 @@ Aturan Penting:
                 });
 
                 if (!response.ok) {
-                    throw new Error(`TTS API Error status: ${response.status}`);
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || 'Gagal menghasilkan audio TTS');
                 }
 
                 const result = await response.json();
                 const part = result?.candidates?.[0]?.content?.parts?.[0];
                 const base64Audio = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType || "audio/L16;rate=24000";
+                const mimeType = part?.inlineData?.mimeType || "";
 
                 if (!base64Audio) {
-                    throw new Error("Tidak menerima data audio dari API.");
+                    throw new Error('Respons API tidak mengandung data audio');
                 }
 
-                // Extract sample rate from mimeType if available (e.g. rate=24000)
-                let sampleRate = 24000;
+                // Extract Sample Rate from mimeType (e.g. "audio/L16;rate=24000")
+                let sampleRate = 24000; // default
                 const rateMatch = mimeType.match(/rate=(\d+)/);
                 if (rateMatch && rateMatch[1]) {
                     sampleRate = parseInt(rateMatch[1], 10);
                 }
 
-                // Convert PCM 16-bit to WAV Blob
+                // Convert Base64 PCM16 to ArrayBuffer & Build WAV
                 const pcmBuffer = base64ToArrayBuffer(base64Audio);
-                const pcm16Array = new Int16Array(pcmBuffer);
-                const wavBlob = pcmToWav(pcm16Array, sampleRate);
+                const pcm16 = new Int16Array(pcmBuffer);
+                const wavBlob = pcmToWav(pcm16, sampleRate);
 
-                // Create Object URL for playback & download
-                if (currentAudioBlob) {
-                    URL.revokeObjectURL(currentAudioBlob);
-                }
-                currentAudioBlob = URL.createObjectURL(wavBlob);
+                // Create Object URL for Audio Player
+                const audioUrl = URL.createObjectURL(wavBlob);
+                const player = document.getElementById('mainAudioPlayer');
+                player.src = audioUrl;
 
-                // Update Audio Player Elements
-                const playerContainer = document.getElementById('audioPlayerContainer');
-                const mainAudioPlayer = document.getElementById('mainAudioPlayer');
-                const btnDownloadWav = document.getElementById('btnDownloadWav');
+                // Setup Download Link
+                const downloadBtn = document.getElementById('downloadWavBtn');
+                downloadBtn.href = audioUrl;
+                downloadBtn.download = `standup_komedi_${voiceName.toLowerCase()}_${Date.now()}.wav`;
 
-                mainAudioPlayer.src = currentAudioBlob;
-                btnDownloadWav.href = currentAudioBlob;
-                btnDownloadWav.download = `standup_${voiceName.toLowerCase()}_${Date.now()}.wav`;
+                // Show Player Container
+                document.getElementById('audioPlayerCard').classList.remove('hidden');
+                document.getElementById('audioMetadata').textContent = `Suara: ${voiceName} | Sample Rate: ${sampleRate}Hz | WAV PCM 16-bit`;
 
-                playerContainer.classList.remove('hidden');
-                mainAudioPlayer.play();
+                showToast('Audio stand-up komedi (.WAV) berhasil dibuat!', 'success');
+                player.play();
 
-                showToast('Audio Stand-Up WAV berhasil dibuat!', 'success');
-
-            } catch (err) {
-                console.error('TTS Generation error:', err);
-                showToast('Gagal memproses audio suara. Silakan coba lagi.', 'error');
+            } catch (error) {
+                console.error(error);
+                showToast('Gagal memproses Audio: ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = originalBtnHtml;
+                btn.innerHTML = originalBtnText;
             }
         }
 
-        // ==========================================
-        // PCM 16-bit to WAV Container Helper Functions
-        // ==========================================
-        function pcmToWav(pcmData, sampleRate = 24000) {
+        // Helper: Base64 string to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Helper: Convert PCM 16-bit data to valid WAV Blob File
+        function pcmToWav(pcm16Array, sampleRate) {
             const numChannels = 1;
-            const bitsPerSample = 16;
-            const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
-            const blockAlign = numChannels * (bitsPerSample / 8);
-            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const bytesPerSample = 2;
+            const blockAlign = numChannels * bytesPerSample;
+            const byteRate = sampleRate * blockAlign;
+            const dataSize = pcm16Array.length * bytesPerSample;
+            const buffer = new ArrayBuffer(44 + dataSize);
             const view = new DataView(buffer);
 
-            /* RIFF identifier */
+            /* RIFF Chunk Descriptor */
             writeString(view, 0, 'RIFF');
-            /* RIFF chunk length */
-            view.setUint32(4, 36 + pcmData.length * 2, true);
-            /* RIFF type */
+            view.setUint32(4, 36 + dataSize, true);
             writeString(view, 8, 'WAVE');
-            /* format chunk identifier */
-            writeString(view, 12, 'fmt ');
-            /* format chunk length */
-            view.setUint32(16, 16, true);
-            /* sample format (1 = raw PCM) */
-            view.setUint16(20, 1, true);
-            /* channel count */
-            view.setUint16(22, numChannels, true);
-            /* sample rate */
-            view.setUint32(24, sampleRate, true);
-            /* byte rate */
-            view.setUint32(28, byteRate, true);
-            /* block align */
-            view.setUint16(32, blockAlign, true);
-            /* bits per sample */
-            view.setUint16(34, bitsPerSample, true);
-            /* data chunk identifier */
-            writeString(view, 36, 'data');
-            /* data chunk length */
-            view.setUint32(40, pcmData.length * 2, true);
 
-            /* Write PCM samples */
+            /* fmt Sub-chunk */
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
+            view.setUint16(20, 1, true);  // AudioFormat (1 for PCM)
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, 16, true); // BitsPerSample
+
+            /* data Sub-chunk */
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            // Write PCM audio samples
             let offset = 44;
-            for (let i = 0; i < pcmData.length; i++, offset += 2) {
-                view.setInt16(offset, pcmData[i], true);
+            for (let i = 0; i < pcm16Array.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16Array[i], true);
             }
 
             return new Blob([buffer], { type: 'audio/wav' });
@@ -698,13 +682,30 @@ Aturan Penting:
             }
         }
 
-        function base64ToArrayBuffer(base64) {
-            const binaryString = atob(base64);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
+        // Toast Notification System
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastContent = document.getElementById('toastContent');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMessage.textContent = message;
+
+            if (type === 'success') {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
+            } else if (type === 'error') {
+                toastIcon.className = 'fa-solid fa-triangle-exclamation text-red-400';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-info text-amber-400';
             }
-            return bytes.buffer;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
         }
     </script>
 </body>
